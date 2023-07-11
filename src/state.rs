@@ -21,8 +21,10 @@ use crate::popover;
 use crate::util::Rational;
 use std::cmp;
 use std::collections::HashMap;
+use std::env;
 use std::time::Instant;
 
+static HEIGHT_ENV_VAR: &str = "SQUEEKBOARD_HEIGHT_PX";
 
 #[derive(Clone, Copy, Debug)]
 pub enum Presence {
@@ -211,6 +213,8 @@ pub struct Application {
     pub layout_choice: LayoutChoice,
     /// Manual override of the system layout
     pub overlay_layout: Option<popover::LayoutId>,
+    /// Forced keyboard height through the environment var defined by HEIGHT_ENV_VAR
+    pub height_px: Option<u32>,
 }
 
 impl Application {
@@ -233,6 +237,12 @@ impl Application {
                 source: LayoutSource::Xkb,
             },
             overlay_layout: None,
+            height_px: match env::var(HEIGHT_ENV_VAR) {
+                Ok(val) => Some(
+                    val.parse().unwrap_or_else(|_| panic!("Expected a number for {}", HEIGHT_ENV_VAR)),
+                ),
+                Err(_e) => None,
+            },
         }
     }
 
@@ -455,11 +465,25 @@ impl ActorState for Application {
             panel: match self.preferred_output {
                 None => animation::Outcome::Hidden,
                 Some(output) => {
-                    let (height, arrangement) = Self::get_preferred_height_and_arrangement(self.outputs.get(&output).unwrap())
+                    let (height, arrangement) = match self.height_px {
+                        None => Self::get_preferred_height_and_arrangement(
+                            self.outputs.get(&output).unwrap(),
+                        )
                         .unwrap_or((
-                            PixelSize{pixels: 0, scale_factor: 1},
+                            PixelSize {
+                                pixels: 0,
+                                scale_factor: 1,
+                            },
                             ArrangementKind::Base,
-                        ));
+                        )),
+                        Some(h) => (
+                            PixelSize {
+                                pixels: h,
+                                scale_factor: 1,
+                            },
+                            ArrangementKind::Base,
+                        ),
+                    };
                     let (layout_name, overlay) = self.get_layout_names();
         
                     // TODO: Instead of setting size to 0 when the output is invalid,
@@ -780,6 +804,31 @@ pub mod test {
                 },
                 ArrangementKind::Base,
             )),
+        );
+    }
+
+    #[test]
+    fn size_controlled_by_env_var() {
+        let start = Instant::now();
+        env::set_var(HEIGHT_ENV_VAR, "123");
+        let state = Application {
+            im: InputMethod::InactiveSince(start),
+            physical_keyboard: Presence::Missing,
+            visibility_override: visibility::State::NotForced,
+            ..application_with_fake_output(start)
+        };
+        env::remove_var(HEIGHT_ENV_VAR);
+
+        assert_matches!(
+            state.get_outcome(start).panel,
+            animation::Outcome::Visible {
+                height: PixelSize {
+                    scale_factor: 1,
+                    pixels: 123,
+                },
+                ..
+            },
+            "Height did not match the specified environment variable",
         );
     }
 }
