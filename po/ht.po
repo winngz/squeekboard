@@ -1,22 +1,22 @@
-# Creole Haitian translation for GNOME Squeekboard.
-# Copyright (C) 2022 Purism
-# This file is distributed under the same license as the Calls package.
-# Pierre Michel Augustin <augustinpierremichel@hotmail.com>, 2022.
+# Squeekboard Haitian Creole Translation
+# Copyright (C) 2024 Purism
+# This file is distributed under the same license as the squeekboard package.
+# Pierre Michel Augustin <pierremichelaugustin@gnuhealth.org>, 2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/Phosh/squeekboard/"
 "issues\n"
-"POT-Creation-Date: 2022-02-26 18:28+0000\n"
-"PO-Revision-Date: 2022-03-01 19:13-0500\n"
+"POT-Creation-Date: 2023-09-14 11:45+0000\n"
+"PO-Revision-Date: 2024-01-10 23:58-0500\n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: ht\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.2\n"
-"Last-Translator: \n"
-"Language: ht\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #. translators: This is a emmoji keyboard layout
 #: data/popover.ui:6
@@ -30,16 +30,16 @@ msgstr "Tèminal"
 
 #: data/popover.ui:18
 msgid "Keyboard Settings"
-msgstr "Paramèt Klavye"
+msgstr "Paramèt klavye"
 
 #: data/sm.puri.Squeekboard.desktop.in.in:3
 msgid "Squeekboard"
-msgstr "Tablo bo squeek"
+msgstr "Planch a woulèt"
 
 #: data/sm.puri.Squeekboard.desktop.in.in:4
 msgid "On Screen Keyboard"
-msgstr "Sou Ekran Klavye"
+msgstr "Sou ekran klavye"
 
 #: data/sm.puri.Squeekboard.desktop.in.in:5
 msgid "An on screen virtual keyboard"
-msgstr "Sou yon ekran klavye vityel "
+msgstr "Yon klavye vityèl sou ekran an"
