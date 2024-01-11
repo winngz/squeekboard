@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/Phosh/squeekboard/"
 "issues\n"
-"POT-Creation-Date: 2023-09-14 11:45+0000\n"
-"PO-Revision-Date: 2024-01-10 23:58-0500\n"
+"POT-Creation-Date: 2024-01-11 05:05+0000\n"
+"PO-Revision-Date: 2024-01-11 10:40-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ht\n"
@@ -30,16 +30,16 @@ msgstr "Tèminal"
 
 #: data/popover.ui:18
 msgid "Keyboard Settings"
-msgstr "Paramèt klavye"
+msgstr "Paramèt Klavye yo"
 
 #: data/sm.puri.Squeekboard.desktop.in.in:3
 msgid "Squeekboard"
-msgstr "Planch a woulèt"
+msgstr "Squeekboard"
 
 #: data/sm.puri.Squeekboard.desktop.in.in:4
 msgid "On Screen Keyboard"
-msgstr "Sou ekran klavye"
+msgstr "Sou Ekran Klavye"
 
 #: data/sm.puri.Squeekboard.desktop.in.in:5
 msgid "An on screen virtual keyboard"
-msgstr "Yon klavye vityèl sou ekran an"
+msgstr "Sou yon ekran klavye vityèl"
