@@ -21,10 +21,7 @@ use crate::popover;
 use crate::util::Rational;
 use std::cmp;
 use std::collections::HashMap;
-use std::env;
 use std::time::Instant;
-
-static HEIGHT_ENV_VAR: &str = "SQUEEKBOARD_HEIGHT_PX";
 
 #[derive(Clone, Copy, Debug)]
 pub enum Presence {
@@ -213,7 +210,7 @@ pub struct Application {
     pub layout_choice: LayoutChoice,
     /// Manual override of the system layout
     pub overlay_layout: Option<popover::LayoutId>,
-    /// Forced keyboard height through the environment var defined by HEIGHT_ENV_VAR
+    /// Forced keyboard height
     pub height_px: Option<u32>,
 }
 
@@ -224,7 +221,7 @@ impl Application {
     // as it allows for startup without waiting for a system check.
     // The downside is that adding actual state should not cause transitions.
     // Another acceptable alternative is to allow explicitly uninitialized parts.
-    pub fn new(now: Instant) -> Self {
+    pub fn new(now: Instant, height_px: Option<u32>) -> Self {
         Self {
             im: InputMethod::InactiveSince(now),
             visibility_override: visibility::State::NotForced,
@@ -237,12 +234,7 @@ impl Application {
                 source: LayoutSource::Xkb,
             },
             overlay_layout: None,
-            height_px: match env::var(HEIGHT_ENV_VAR) {
-                Ok(val) => Some(
-                    val.parse().unwrap_or_else(|_| panic!("Expected a number for {}", HEIGHT_ENV_VAR)),
-                ),
-                Err(_e) => None,
-            },
+            height_px,
         }
     }
 
@@ -571,7 +563,7 @@ pub mod test {
         Application {
             preferred_output: Some(id),
             outputs,
-            ..Application::new(start)
+            ..Application::new(start, None)
         }
     }
 
@@ -810,14 +802,21 @@ pub mod test {
     #[test]
     fn size_controlled_by_env_var() {
         let start = Instant::now();
-        env::set_var(HEIGHT_ENV_VAR, "123");
+        std::env::set_var(main::HEIGHT_ENV_VAR, "123");
         let state = Application {
             im: InputMethod::InactiveSince(start),
             physical_keyboard: Presence::Missing,
             visibility_override: visibility::State::NotForced,
+            height_px: main::height_px(),
             ..application_with_fake_output(start)
         };
-        env::remove_var(HEIGHT_ENV_VAR);
+
+        std::env::remove_var(main::HEIGHT_ENV_VAR);
+        assert_eq!(
+            main::height_px(),
+            None,
+            "main::height_px() did not return None after removing the environment variable"
+        );
 
         assert_matches!(
             state.get_outcome(start).panel,

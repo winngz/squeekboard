@@ -11,7 +11,19 @@ use crate::event_loop;
 use crate::panel;
 use crate::state;
 use glib::{Continue, MainContext, PRIORITY_DEFAULT, Receiver};
+use std::env;
 
+pub static HEIGHT_ENV_VAR: &str = "SQUEEKBOARD_HEIGHT_PX";
+
+pub fn height_px() -> Option<u32> {
+    match env::var(HEIGHT_ENV_VAR) {
+        Ok(val) => Some(
+            val.parse().unwrap_or_else(|e| panic!("{} variable invalid: {}", HEIGHT_ENV_VAR, e)),
+        ),
+        Err(env::VarError::NotPresent) => None,
+        Err(e) => panic!("{} variable invalid: {}", HEIGHT_ENV_VAR, e)
+    }
+}
 
 mod c {
     use super::*;
@@ -105,7 +117,8 @@ mod c {
         // Set up channels
         let (sender, receiver) = MainContext::channel(PRIORITY_DEFAULT);
         let now = Instant::now();
-        let state_manager = driver::Threaded::new(sender, state::Application::new(now));
+        let height = height_px();
+        let state_manager = driver::Threaded::new(sender, state::Application::new(now, height));
 
         debug::init(state_manager.clone());
 
